@@ -16,10 +16,11 @@ Project 7 of the Openclassrooms training "PHP/Symfony Application Developper".
 
 ## Set Up
 
-* Librairies Installation
+* Symfony & Api Platform installation
 
 ```bash
-    composer install
+    composer create-project symfony/skeleton
+    composer require api
 ```
 
 * Git clone the project
