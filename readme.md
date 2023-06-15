@@ -16,11 +16,12 @@ Project 7 of the Openclassrooms training "PHP/Symfony Application Developper".
 
 ## Set Up
 
-* Symfony & Api Platform installation
+* Symfony, Api Platform, Faker PHP
 
 ```bash
     composer create-project symfony/skeleton
     composer require api
+    composer require fakerphp/faker
 ```
 
 * Git clone the project
@@ -60,6 +61,12 @@ Update .env file your database configuration
 
 ```bash
     php bin/console doctrine:migrations:migrate
+```
+
+* Insert data fixtures
+
+```bash
+    php bin/console doctrine:fixtures:load
 ```
 
 

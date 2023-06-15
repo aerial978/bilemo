@@ -26,7 +26,7 @@ class Products
     #[ORM\Column(length: 25)]
     private ?string $color = null;
 
-    #[ORM\Column(length: 25)]
+    #[ORM\Column(length: 50)]
     private ?string $screenSize = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
