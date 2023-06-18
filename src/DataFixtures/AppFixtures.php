@@ -20,8 +20,17 @@ class AppFixtures extends Fixture
     
     public function load(ObjectManager $manager): void
     {
+        for ($i = 0; $i < 10; $i++){
+            $brands = new Brands();
+            $brands->setName($this->faker->word());
+            $manager->persist($brands);
+
+            $listBrands[] = $brands;
+        }
+        
         for($i = 0; $i < 15; $i++){
             $products = new Products();
+            $products->setBrand($listBrands[array_rand($listBrands)]);
             $products->setModel($this->faker->words(5, true));
             $products->setImage($this->faker->word());
             $products->setPrice($this->faker->randomFloat(2, 100, 200));
@@ -32,11 +41,6 @@ class AppFixtures extends Fixture
             $manager->persist($products);
         }
 
-        for ($i = 0; $i < 10; $i++){
-            $brands = new Brands();
-            $brands->setName($this->faker->word());
-            $manager->persist($brands); 
-        }
         $manager->flush();
     }
 }
