@@ -52,6 +52,9 @@ class Products
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    #[ORM\ManyToOne]
+    private ?Brands $brand = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,6 +140,18 @@ class Products
     public function setUpdatedAt(\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getBrand(): ?Brands
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(?Brands $brand): static
+    {
+        $this->brand = $brand;
 
         return $this;
     }
