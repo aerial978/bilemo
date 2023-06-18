@@ -53,6 +53,7 @@ class Products
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne]
+    #[Groups ('read:Products')]
     private ?Brands $brand = null;
 
     public function getId(): ?int
