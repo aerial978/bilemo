@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use Faker\Factory;
 use Faker\Generator;
 use App\Entity\Brands;
+use App\Entity\Conditions;
 use App\Entity\Products;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -20,6 +21,12 @@ class AppFixtures extends Fixture
     
     public function load(ObjectManager $manager): void
     {
+        for ($i = 0; $i < 2; $i++){
+            $conditions = new Conditions;
+            $conditions->setName($this->faker->word());
+            $manager->persist($conditions);
+        }
+        
         for ($i = 0; $i < 10; $i++){
             $brands = new Brands();
             $brands->setName($this->faker->word());
