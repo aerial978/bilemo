@@ -2,9 +2,10 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Products;
 use Faker\Factory;
 use Faker\Generator;
+use App\Entity\Brands;
+use App\Entity\Products;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -19,9 +20,17 @@ class AppFixtures extends Fixture
     
     public function load(ObjectManager $manager): void
     {
-        for($i = 0; $i < 15; $i++) {
+        for ($i = 0; $i < 10; $i++){
+            $brands = new Brands();
+            $brands->setName($this->faker->word());
+            $manager->persist($brands);
 
+            $listBrands[] = $brands;
+        }
+        
+        for($i = 0; $i < 15; $i++){
             $products = new Products();
+            $products->setBrand($listBrands[array_rand($listBrands)]);
             $products->setModel($this->faker->words(5, true));
             $products->setImage($this->faker->word());
             $products->setPrice($this->faker->randomFloat(2, 100, 200));
@@ -29,10 +38,10 @@ class AppFixtures extends Fixture
             $products->setScreenSize($this->faker->words(3, true));
             $products->setCreatedAt($this->faker->datetimeBetween('-3 month', '-1 month'));
             $products->setUpdatedAt($this->faker->datetimeBetween('-2 month', '-2 weeks'));
-
             $manager->persist($products);
         }
 
         $manager->flush();
     }
 }
+
