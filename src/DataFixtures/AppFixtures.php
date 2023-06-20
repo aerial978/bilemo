@@ -25,6 +25,8 @@ class AppFixtures extends Fixture
             $conditions = new Conditions;
             $conditions->setName($this->faker->word());
             $manager->persist($conditions);
+
+            $listConditions[] = $conditions;
         }
         
         for ($i = 0; $i < 10; $i++){
@@ -38,6 +40,7 @@ class AppFixtures extends Fixture
         for($i = 0; $i < 15; $i++){
             $products = new Products();
             $products->setBrand($listBrands[array_rand($listBrands)]);
+            $products->setConditions($listConditions[array_rand($listConditions)]);
             $products->setModel($this->faker->words(5, true));
             $products->setImage($this->faker->word());
             $products->setPrice($this->faker->randomFloat(2, 100, 200));
