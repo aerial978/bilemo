@@ -10,6 +10,7 @@ use App\Repository\ProductsRepository;
 use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ORM\Entity(repositoryClass: ProductsRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['read:Products']],
     operations : [
@@ -17,7 +18,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Get(),
     ]
 )]
-#[ORM\Entity(repositoryClass: ProductsRepository::class)]
 class Products
 {
     #[ORM\Id]
@@ -57,6 +57,7 @@ class Products
     private ?Brands $brand = null;
 
     #[ORM\ManyToOne]
+    #[Groups ('read:Products')]
     private ?Conditions $conditions = null;
 
     public function getId(): ?int

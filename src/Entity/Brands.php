@@ -7,10 +7,10 @@ use App\Repository\BrandsRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ORM\Entity(repositoryClass: BrandsRepository::class)]
 #[ApiResource(
     operations : []
 )]
-#[ORM\Entity(repositoryClass: BrandsRepository::class)]
 class Brands
 {
     #[ORM\Id]
