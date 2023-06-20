@@ -56,6 +56,9 @@ class Products
     #[Groups ('read:Products')]
     private ?Brands $brand = null;
 
+    #[ORM\ManyToOne]
+    private ?Conditions $conditions = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,6 +156,18 @@ class Products
     public function setBrand(?Brands $brand): static
     {
         $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function getConditions(): ?Conditions
+    {
+        return $this->conditions;
+    }
+
+    public function setConditions(?Conditions $conditions): static
+    {
+        $this->conditions = $conditions;
 
         return $this;
     }
