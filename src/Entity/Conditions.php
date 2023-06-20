@@ -3,15 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\BrandsRepository;
 use ApiPlatform\Metadata\ApiResource;
+use App\Repository\ConditionsRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: BrandsRepository::class)]
+
+#[ORM\Entity(repositoryClass: ConditionsRepository::class)]
 #[ApiResource(
-    operations : []
+    operations: []
 )]
-class Brands
+class Conditions
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,7 +20,7 @@ class Brands
     #[Groups ('read:Products')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 25)]
     #[Groups ('read:Products')]
     private ?string $name = null;
 
