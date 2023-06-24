@@ -1,6 +1,6 @@
 # BileMo
 
-Bilmo is a API REST designed to allow all online sales platforms to access a supplier's catalog of high-end mobile phones.
+BileMo is a API REST designed to allow all online sales platforms to access a supplier's catalog of high-end mobile phones.
 
 Project 7 of the Openclassrooms training "PHP/Symfony Application Developper".
 
