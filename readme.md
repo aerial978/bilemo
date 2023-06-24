@@ -1,4 +1,4 @@
-# Bilmo
+# BileMo
 
 Bilmo is a API REST designed to allow all online sales platforms to access a supplier's catalog of high-end mobile phones.
 
