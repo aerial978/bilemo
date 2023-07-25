@@ -5,18 +5,22 @@ namespace App\DataFixtures;
 use Faker\Factory;
 use Faker\Generator;
 use App\Entity\Brands;
+use App\Entity\Clients;
 use App\Entity\Conditions;
 use App\Entity\Products;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     public Generator $faker;
+    private $userPasswordHasher;
     
-    public function __construct()
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher)
     {
         $this->faker = Factory::create('fr_FR');
+        $this->userPasswordHasher = $userPasswordHasher;
     }
     
     public function load(ObjectManager $manager): void
@@ -49,9 +53,20 @@ class AppFixtures extends Fixture
             $products->setCreatedAt($this->faker->datetimeBetween('-3 month', '-1 month'));
             $products->setUpdatedAt($this->faker->datetimeBetween('-2 month', '-2 weeks'));
             $manager->persist($products);
+
+            $listProducts[] = $products;
+        }
+
+        for ($i = 0; $i < 5; $i++){
+            $clients = new Clients;
+            $clients->setName($this->faker->word());
+            $clients->setPassword($this->userPasswordHasher->hashPassword($clients, "password"));
+
+            $manager->persist($clients);
+
+            $listClients[] = $clients;
         }
 
         $manager->flush();
     }
 }
-
