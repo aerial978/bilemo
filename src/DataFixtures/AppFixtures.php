@@ -4,10 +4,11 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use Faker\Generator;
+use App\Entity\Users;
 use App\Entity\Brands;
 use App\Entity\Clients;
-use App\Entity\Conditions;
 use App\Entity\Products;
+use App\Entity\Conditions;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -65,6 +66,18 @@ class AppFixtures extends Fixture
             $manager->persist($clients);
 
             $listClients[] = $clients;
+        }
+
+        for ($i = 0; $i <= 20; $i++){
+            $users = new Users();
+            $users->setClient($listClients[array_rand($listClients)]);
+            $users->setLastName($this->faker->lastName());
+            $users->setFirstName($this->faker->firstName());
+            $users->setEmail($this->faker->email());
+            $users->setPhoneNumber($this->faker->phoneNumber());
+            $users->setCreatedAt($this->faker->datetimeBetween('-5 years', '-1 month'));
+            $users->setUpdatedAt($this->faker->datetimeBetween('-4 years', '-1 year'));
+            $manager->persist($users);
         }
 
         $manager->flush();
