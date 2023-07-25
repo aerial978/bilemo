@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ClientsRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 
@@ -17,9 +18,11 @@ class Clients implements PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups (['user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, unique:true)]
+    #[Groups (['user:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]

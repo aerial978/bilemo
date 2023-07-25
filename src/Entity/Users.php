@@ -2,38 +2,56 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\UsersRepository;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UsersRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Get(),
+        new Post(),
+        new Delete()
+    ],
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']]
+)]
 class Users
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups (['user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups (['user:read', 'user:write'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups (['user:read', 'user:write'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups (['user:read', 'user:write'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups (['user:read', 'user:write'])]
     private ?string $phoneNumber = null;
 
     #[ORM\Column]
-    private ?\DateTime $createdAt = null;
-
-    #[ORM\Column]
-    private ?\DateTime $updatedAt = null;
+    #[Groups (['user:read', 'user:write'])]
+    private ?\DateTime $createdAt;
 
     #[ORM\ManyToOne]
+    #[Groups (['user:read', 'user:write'])]
     private ?Clients $client = null;
 
     public function getId(): ?int
@@ -97,18 +115,6 @@ class Users
     public function setCreatedAt(\DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTime $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
 
         return $this;
     }
