@@ -17,15 +17,15 @@ final class Version20230615153543 extends AbstractMigration
         return '';
     }
 
+
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE products CHANGE screen_size screen_size VARCHAR(50) NOT NULL');
     }
 
+
     public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE products CHANGE screen_size screen_size VARCHAR(25) NOT NULL');
     }
 }

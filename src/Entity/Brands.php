@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use App\Repository\BrandsRepository;
 use ApiPlatform\Metadata\ApiResource;
+use App\Repository\BrandsRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BrandsRepository::class)]
@@ -16,11 +16,11 @@ class Brands
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?string $name = null;
 
     public function getId(): ?int
@@ -28,11 +28,17 @@ class Brands
         return $this->id;
     }
 
+    /**
+     * Undocumented function.
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * Undocumented function.
+     */
     public function setName(string $name): static
     {
         $this->name = $name;

@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Repository\ProductsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\ProductsRepository;
-use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read:Products']],
+    normalizationContext: ['groups' => ['products:read']],
     operations : [
         new GetCollection(),
         new Get(),
@@ -23,27 +23,27 @@ class Products
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?string $model = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?string $image = null;
 
     #[ORM\Column]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?float $price = null;
 
     #[ORM\Column(length: 25)]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?string $color = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?string $screenSize = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -53,13 +53,16 @@ class Products
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?Brands $brand = null;
 
     #[ORM\ManyToOne]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?Conditions $conditions = null;
 
+    /**
+     * Undocumented function.
+     */
     public function getId(): ?int
     {
         return $this->id;
