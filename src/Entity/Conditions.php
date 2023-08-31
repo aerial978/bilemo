@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ConditionsRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-
 
 #[ORM\Entity(repositoryClass: ConditionsRepository::class)]
 #[ApiResource(
@@ -17,13 +16,16 @@ class Conditions
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 25)]
-    #[Groups ('read:Products')]
+    #[Groups('products:read')]
     private ?string $name = null;
 
+    /**
+     * Undocumented function.
+     */
     public function getId(): ?int
     {
         return $this->id;
