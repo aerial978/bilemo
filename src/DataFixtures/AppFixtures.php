@@ -61,7 +61,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 5; ++$i) {
             $clients = new Clients();
             $clients->setEmail($this->faker->email());
-            $clients->setRoles(['ROLE_USER']);
+            $clients->setRoles(['ROLE_CLIENT']);
             $clients->setPassword($this->userPasswordHasher->hashPassword($clients, 'password'));
 
             $manager->persist($clients);
