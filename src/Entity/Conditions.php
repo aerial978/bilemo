@@ -16,16 +16,13 @@ class Conditions
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?int $id = null;
 
     #[ORM\Column(length: 25)]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?string $name = null;
 
-    /**
-     * Undocumented function.
-     */
     public function getId(): ?int
     {
         return $this->id;

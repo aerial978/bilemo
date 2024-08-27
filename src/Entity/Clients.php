@@ -18,11 +18,11 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read'])]
+    #[Groups(['read:Users'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['user:read'])]
+    #[Groups(['read:Users'])]
     private ?string $email = null;
 
     #[ORM\Column]

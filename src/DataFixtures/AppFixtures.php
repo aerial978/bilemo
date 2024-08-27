@@ -7,52 +7,71 @@ use App\Entity\Clients;
 use App\Entity\Conditions;
 use App\Entity\Products;
 use App\Entity\Users;
+use App\Utils\FakerGenerator;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-    public Generator $faker;
     private $userPasswordHasher;
+    private $fakerGenerator;
 
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher)
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher, FakerGenerator $fakerGenerator)
     {
-        $this->faker = Factory::create('fr_FR');
         $this->userPasswordHasher = $userPasswordHasher;
+        $this->fakerGenerator = $fakerGenerator;
     }
 
     public function load(ObjectManager $manager): void
     {
-        for ($i = 0; $i < 2; ++$i) {
-            $conditions = new Conditions();
-            $conditions->setName($this->faker->word());
-            $manager->persist($conditions);
+        $faker = Factory::create('fr_FR');
 
-            $listConditions[] = $conditions;
+        $uniqueConditions = [];
+
+        while (count($uniqueConditions) < 2) {
+            $condition = $this->fakerGenerator->mobileCondition();
+
+            if (!in_array($condition, $uniqueConditions)) {
+                $uniqueConditions[] = $condition;
+                $conditions = new Conditions();
+                $conditions->setName($condition);
+                $manager->persist($conditions);
+
+                $listConditions[] = $conditions;
+            }
         }
 
-        for ($i = 0; $i < 10; ++$i) {
-            $brands = new Brands();
-            $brands->setName($this->faker->word());
-            $manager->persist($brands);
+        $uniqueBrands = []; // Initialise un tableau vide pour stocker les marques uniques.
 
-            $listBrands[] = $brands;
+        while (count($uniqueBrands) < 10) { // Démarre une boucle tant que le nombre de marques uniques dans le tableau est inférieur à 10.
+            $brand = $this->fakerGenerator->mobileBrand(); // Génère une marque de téléphone mobile aléatoire.
+
+            if (!in_array($brand, $uniqueBrands)) { // Vérifie si la marque générée n'est pas déjà présente dans le tableau des marques uniques.
+                $uniqueBrands[] = $brand; // Ajoute la marque générée au tableau des marques uniques.
+                $brands = new Brands(); // Crée une nouvelle instance de l'entité Brands.
+                $brands->setName($brand); // Définit le nom de la marque dans l'instance Brands avec la valeur générée.
+                $manager->persist($brands); // Persiste l'instance Brands dans la base de données.
+
+                $listBrands[] = $brands; // Ajoute l'instance Brands à un tableau $listBrands (peut être utilisé ultérieurement).
+            }
         }
 
-        for ($i = 0; $i < 15; ++$i) {
+        for ($i = 0; $i < 50; ++$i) {
             $products = new Products();
-            $products->setBrand($listBrands[array_rand($listBrands)]);
+            $brand = $listBrands[array_rand($listBrands)]; // Sélectionnez une marque aléatoire
+            $model = $this->fakerGenerator->mobileModel($brand->getName()); // Générez un modèle aléatoire en fonction de la marque
+
+            $products->setBrand($brand);
             $products->setConditions($listConditions[array_rand($listConditions)]);
-            $products->setModel($this->faker->words(5, true));
-            $products->setImage($this->faker->word());
-            $products->setPrice($this->faker->randomFloat(2, 100, 200));
-            $products->setColor($this->faker->word());
-            $products->setScreenSize($this->faker->words(3, true));
-            $products->setCreatedAt($this->faker->datetimeBetween('-3 month', '-1 month'));
-            $products->setUpdatedAt($this->faker->datetimeBetween('-2 month', '-2 weeks'));
+            $products->setModel($model); // Définissez le modèle généré
+            $products->setSlug($model);
+            $products->setPrice($faker->randomFloat(2, 100, 400));
+            $products->setColor($this->fakerGenerator->mobileColor());
+            $products->setScreenSize($this->fakerGenerator->mobileScreenSize());
+            $products->setCreatedAt($faker->datetimeBetween('-3 month', '-1 month'));
+            $products->setUpdatedAt($faker->datetimeBetween('-2 month', '-2 weeks'));
             $manager->persist($products);
 
             $listProducts[] = $products;
@@ -60,7 +79,7 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 5; ++$i) {
             $clients = new Clients();
-            $clients->setEmail($this->faker->email());
+            $clients->setEmail($faker->email());
             $clients->setRoles(['ROLE_CLIENT']);
             $clients->setPassword($this->userPasswordHasher->hashPassword($clients, 'password'));
 
@@ -72,11 +91,13 @@ class AppFixtures extends Fixture
         for ($i = 0; $i <= 20; ++$i) {
             $users = new Users();
             $users->setClient($listClients[array_rand($listClients)]);
-            $users->setLastName($this->faker->lastName());
-            $users->setFirstName($this->faker->firstName());
-            $users->setEmail($this->faker->email());
-            $users->setPhoneNumber($this->faker->phoneNumber());
-            $users->setCreatedAt($this->faker->datetimeBetween('-5 years', '-1 month'));
+            $users->setLastName($faker->lastName());
+            $users->setFirstName($faker->firstName());
+            $users->setEmail($faker->email());
+            $phoneNumber = '0'.$faker->randomNumber(9, true);
+            $users->setPhoneNumber($phoneNumber);
+            $users->setCreatedAt($faker->datetimeBetween('-5 years', '-1 month'));
+            $users->setUpdatedAt($faker->datetimeBetween('-4 years', '-1 year'));
             $manager->persist($users);
         }
 
