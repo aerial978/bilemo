@@ -2,57 +2,76 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Controller\CustomController;
+use App\Entity\Traits\TimestampableEntityTrait;
 use App\Repository\UsersRepository;
+use App\ValidatorConstraint\UserValidator;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ApiResource(
+    normalizationContext: ['groups' => ['read:Users']],
     operations: [
-        new GetCollection(),
-        new Get(),
-        new Post(),
-        new Delete(),
+        new GetCollection(controller: CustomController::class),
+        new Get(security: 'object.client == user', securityMessage: 'Error client'),
+        new Post(denormalizationContext: ['groups' => ['post:Users', 'timestampable']]),
+        new Delete(security: 'object.client == user', securityMessage: 'Error client'),
     ],
-    normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:write']]
 )]
+#[UniqueEntity(fields: ['email'], message: 'This email is already used !')]
 class Users
 {
+    /**
+     * Hook timestampable behavior
+     * updates createdAt, updatedAt fields.
+     */
+    use TimestampableEntityTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read'])]
+    #[Groups('read:Users')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['read:Users', 'post:Users'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2, minMessage: 'Please enter at least 2 characters !')]
+    #[Assert\Callback([UserValidator::class, 'validateFirstName'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['read:Users', 'post:Users'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2, minMessage: 'Please enter at least 2 characters !')]
+    #[Assert\Callback([UserValidator::class, 'validateLastName'])]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 50)]
-    #[Groups(['user:read', 'user:write'])]
+    #[ORM\Column(length: 50, unique: true)]
+    #[Groups(['read:Users', 'post:Users'])]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['read:Users', 'post:Users'])]
+    #[Assert\NotBlank]
+    #[Assert\Callback([UserValidator::class, 'validatePhoneNumber'])]
     private ?string $phoneNumber = null;
 
-    #[ORM\Column]
-    #[Groups(['user:read', 'user:write'])]
-    private ?\DateTime $createdAt;
-
     #[ORM\ManyToOne]
-    #[Groups(['user:read', 'user:write'])]
-    private ?Clients $client = null;
+    #[ApiProperty(readable: true, writable: false)]
+    #[Groups(['read:Users', 'post:Users'])]
+    public ?Clients $client = null;
 
     public function getId(): ?int
     {
@@ -103,18 +122,6 @@ class Users
     public function setPhoneNumber(string $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTime $createdAt): static
-    {
-        $this->createdAt = $createdAt;
 
         return $this;
     }

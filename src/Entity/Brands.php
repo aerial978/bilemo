@@ -16,11 +16,11 @@ class Brands
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?string $name = null;
 
     public function getId(): ?int
@@ -28,17 +28,11 @@ class Brands
         return $this->id;
     }
 
-    /**
-     * Undocumented function.
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Undocumented function.
-     */
     public function setName(string $name): static
     {
         $this->name = $name;

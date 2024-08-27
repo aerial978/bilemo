@@ -2,48 +2,57 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\ProductsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['products:read']],
+    normalizationContext: ['groups' => ['read:Products']],
     operations : [
         new GetCollection(),
         new Get(),
     ]
 )]
+#[ApiFilter(OrderFilter::class, properties: ['model'])]
+#[ApiFilter(SearchFilter::class, properties: ['model' => 'ipartial', 'color' => 'ipartial', 'screenSize' => 'ipartial'])]
+#[ApiFilter(RangeFilter::class, properties: ['price'])]
 class Products
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?string $model = null;
 
-    #[ORM\Column(length: 100)]
-    #[Groups('products:read')]
-    private ?string $image = null;
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['model'])]
+    #[Groups('read:Products')]
+    private ?string $slug = null;
 
     #[ORM\Column]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?float $price = null;
 
     #[ORM\Column(length: 25)]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?string $color = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?string $screenSize = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -53,16 +62,13 @@ class Products
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?Brands $brand = null;
 
     #[ORM\ManyToOne]
-    #[Groups('products:read')]
+    #[Groups('read:Products')]
     private ?Conditions $conditions = null;
 
-    /**
-     * Undocumented function.
-     */
     public function getId(): ?int
     {
         return $this->id;
@@ -80,14 +86,14 @@ class Products
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getSlug(): ?string
     {
-        return $this->image;
+        return $this->slug;
     }
 
-    public function setImage(string $image): static
+    public function setSlug(string $slug): static
     {
-        $this->image = $image;
+        $this->slug = $slug;
 
         return $this;
     }
