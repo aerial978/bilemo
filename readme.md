@@ -1,5 +1,7 @@
 # BileMo
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2cf89237dae9499db076353bba9a4c26)](https://app.codacy.com/gh/aerial978/bilemo/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 BileMo is a API REST designed to allow all online sales platforms to access a supplier's catalog of high-end mobile phones.
 
 Project 7 of the Openclassrooms training "PHP/Symfony Application Developper".
