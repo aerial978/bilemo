@@ -29,7 +29,7 @@ Project 7 of the Openclassrooms training "PHP/Symfony Application Developper".
 * Git clone the project
 
 ```bash
-    https://github.com/aerial978/bilmo.git
+    https://github.com/aerial978/bilemo.git
 ```
 
 * Database
