@@ -10,7 +10,6 @@ class UserValidator
     {
         if (preg_match('/\d/', $firstName)) {
             $context->buildViolation('First name cannot contain numbers !')
-                ->atPath('firstName')
                 ->addViolation();
         }
     }
@@ -19,16 +18,20 @@ class UserValidator
     {
         if (preg_match('/\d/', $lastName)) {
             $context->buildViolation('Last name cannot contain numbers !')
-                ->atPath('firstName')
                 ->addViolation();
         }
     }
 
     public static function validatePhoneNumber($phoneNumber, ExecutionContextInterface $context): void
-    {
+    {        
+        if (empty($phoneNumber)) {
+            $context->buildViolation('Phone number is required !')
+                ->addViolation();
+            return; 
+        }
+        
         if (!preg_match('/^0[1-9][0-9]{8}$/', $phoneNumber)) {
             $context->buildViolation('Please enter a valid phone number !')
-                ->atPath('phoneNumber')
                 ->addViolation();
         }
     }

@@ -2,29 +2,36 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
+use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UsersRepository;
+use App\Controller\CustomController;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-use App\Controller\CustomController;
-use App\Entity\Traits\TimestampableEntityTrait;
-use App\Repository\UsersRepository;
+use App\DataProvider\UserItemDataProvider;
 use App\ValidatorConstraint\UserValidator;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Entity\Traits\TimestampableEntityTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['read:Users']],
     operations: [
         new GetCollection(controller: CustomController::class),
-        new Get(security: 'object.client == user', securityMessage: 'Error client'),
+        new Get(
+            provider: UserItemDataProvider::class, 
+            security: 'object.client == user', 
+            securityMessage: 'You do not have access to this user !'),
         new Post(denormalizationContext: ['groups' => ['post:Users', 'timestampable']]),
-        new Delete(security: 'object.client == user', securityMessage: 'Error client'),
+        new Delete(
+            provider: UserItemDataProvider::class, 
+            security: 'object.client == user',
+            securityMessage: 'You do not have access to this user !'),
     ],
 )]
 #[UniqueEntity(fields: ['email'], message: 'This email is already used !')]
@@ -44,27 +51,26 @@ class Users
 
     #[ORM\Column(length: 50)]
     #[Groups(['read:Users', 'post:Users'])]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: "First name is required !")]
     #[Assert\Length(min: 2, minMessage: 'Please enter at least 2 characters !')]
     #[Assert\Callback([UserValidator::class, 'validateFirstName'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['read:Users', 'post:Users'])]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: "Last name is required !")]
     #[Assert\Length(min: 2, minMessage: 'Please enter at least 2 characters !')]
     #[Assert\Callback([UserValidator::class, 'validateLastName'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 50, unique: true)]
     #[Groups(['read:Users', 'post:Users'])]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: "Email is required !")]
     #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(length: 20)]
     #[Groups(['read:Users', 'post:Users'])]
-    #[Assert\NotBlank]
     #[Assert\Callback([UserValidator::class, 'validatePhoneNumber'])]
     private ?string $phoneNumber = null;
 
