@@ -28,5 +28,11 @@ services:
         tags:
             - { name: 'kernel.event_subscriber' }
 
+    App\DataProvider\ProductItemDataProvider:
+        arguments:
+            $repository: '@App\Repository\ProductsRepository'
+        tags: ['api_platform.state_provider']
+
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
